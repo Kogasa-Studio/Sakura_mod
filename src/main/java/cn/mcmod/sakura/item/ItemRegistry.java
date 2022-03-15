@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import cn.mcmod.sakura.SakuraMod;
 import cn.mcmod.sakura.block.BlockRegistry;
+import cn.mcmod.sakura.item.enums.SakuraNormalItemSet;
 import cn.mcmod_mmf.mmlib.item.ItemFoodSeeds;
 import cn.mcmod_mmf.mmlib.item.info.FoodInfo;
 import cn.mcmod_mmf.mmlib.registry.ItemRegistryUtil;
@@ -19,7 +20,7 @@ public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, SakuraMod.MODID);
 
     public static final RegistryObject<Item> RICE_SEEDS = ITEMS.register("rice_seeds", RiceSeedsItem::new);
-    
+
     public static final RegistryObject<Item> ONION_SEEDS = ITEMS.register("onion_seeds",
             () -> seed(BlockRegistry.ONION_CROP.get()));
     public static final RegistryObject<Item> RADISH_SEEDS = ITEMS.register("radish_seeds",
@@ -37,18 +38,14 @@ public class ItemRegistry {
             () -> seed(BlockRegistry.EGGPLANT_CROP.get()));
     public static final RegistryObject<Item> TOMATO_SEEDS = ITEMS.register("tomato_seeds",
             () -> seed(BlockRegistry.TOMATO_CROP.get()));
-    
-    public static final RegistryObject<ItemFoodSeeds> TARO = ITEMS.register("taro",
-            () -> seed(BlockRegistry.TARO_CROP.get(), 
-                FoodInfo.builder().name("taro")
-                .amountAndCalories(2, 0.2F).water(0F)
-                .nutrients(2F, 2F, 0F, 0F, 0F).decayModifier(2F)
-                .heatCapacity(1F).cookingTemp(480F)
-                .build())
-            );
 
-    public static final Map<String, RegistryObject<Item>> MATERIALS = ItemRegistryUtil
-            .registerAllItemInList(ItemList.MATERIAL_SET, name -> register(name, ItemRegistry::normalItem));
+    public static final RegistryObject<ItemFoodSeeds> TARO = ITEMS.register("taro",
+            () -> seed(BlockRegistry.TARO_CROP.get(),
+                    FoodInfo.builder().name("taro").amountAndCalories(2, 0.2F).water(0F).nutrients(2F, 2F, 0F, 0F, 0F)
+                            .decayModifier(2F).heatCapacity(1F).cookingTemp(480F).build()));
+
+    public static final Map<SakuraNormalItemSet, RegistryObject<Item>> MATERIALS = ItemRegistryUtil
+            .mapOfKeys(SakuraNormalItemSet.class, material -> register(material.getName(), ItemRegistry::normalItem));
 
     private static Item normalItem() {
         return new Item(SakuraMod.defaultItemProperties());
@@ -57,7 +54,7 @@ public class ItemRegistry {
     private static ItemNameBlockItem seed(Block block) {
         return new ItemNameBlockItem(block, SakuraMod.defaultItemProperties());
     }
-    
+
     private static ItemFoodSeeds seed(Block block, FoodInfo info) {
         return new ItemFoodSeeds(block, SakuraMod.defaultItemProperties(), info);
     }
